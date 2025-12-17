@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cora Atkinson — Résumé</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,650&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="">
+
+  <style>
+    :root{
+      /* Light outdoor green */
+      --bg:#eaf4ee;
+      --card:rgba(255,255,255,.92);
+      --ink:#111;
+      --muted:rgba(17,17,17,.65);
+      --line:rgba(17,17,17,.12);
+
+      /* Sage accents */
+      --accent:#cfe3d6;
+      --accent2:#e4f0ea;
+
+      --radius:18px;
+      --max:980px;
+      --shadow:0 14px 32px rgba(0,0,0,.08);
+    }
+
+    *{ box-sizing:border-box }
+
+    body{
+      margin:0;
+      font-family:"DM Sans", system-ui, -apple-system, sans-serif;
+      color:var(--ink);
+      line-height:1.6;
+      background:
+        radial-gradient(900px 600px at 15% 0%, #dbeee3, transparent 60%),
+        radial-gradient(900px 600px at 85% 10%, #edf7f2, transparent 62%),
+        radial-gradient(850px 600px at 50% 100%, #d6eadf, transparent 58%),
+        var(--bg);
+    }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding:28px 18px 60px }
+
+    /* Header */
+    header{
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter:blur(10px);
+      background:rgba(234,244,238,.92);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      max-width:var(--max);
+      margin:auto;
+      padding:12px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .brand .name{
+      font-family:Fraunces, serif;
+      font-weight:650;
+      font-size:1.15rem;
+    }
+    .brand .role{
+      font-size:.95rem;
+      color:var(--muted);
+    }
+
+    /* Hero */
+    .hero{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:16px;
+    }
+    @media(max-width:860px){
+      .hero{ grid-template-columns:1fr }
+      header{ position:relative }
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .pad{ padding:20px }
+
+    h1,h2,h3{
+      font-family:Fraunces, serif;
+      letter-spacing:.2px;
+    }
+    h1{ font-size:clamp(2rem,3vw,2.6rem); margin:0 0 10px }
+    h2{ font-size:1.25rem; margin:0 }
+    h3{ font-size:1.05rem; margin:0 }
+
+    .lede{ color:var(--muted); font-size:1.05rem }
+
+    .badge-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .badge{
+      padding:10px 14px;
+      border-radius:999px;
+      background:var(--accent);
+      border:1px solid var(--line);
+      font-size:.95rem;
+    }
+
+    main{ margin-top:18px; display:grid; gap:18px }
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      margin-bottom:10px;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    @media(max-width:860px){
+      .grid2{ grid-template-columns:1fr }
+    }
+
+    .entry{
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+    .entry-head{
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+    .meta{
+      font-size:.95rem;
+      color:var(--muted);
+    }
+
+    ul{ margin:10px 0 0; padding-left:18px }
+    li{ margin:6px 0 }
+
+    footer{
+      margin-top:26px;
+      text-align:center;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <nav class="nav">
+    <div class="brand">
+      <div class="name">Cora Atkinson</div>
+      <div class="role">Pre-Business • Social Media Marketing</div>
+    </div>
+  </nav>
+</header>
+
+<div class="wrap">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="card pad">
+      <h1>Hi, I’m Cora.</h1>
+      <p class="lede">
+        BYU student with strong customer-facing experience, leadership background,
+        and a growing passion for social media marketing and consumer psychology.
+      </p>
+
+      <div class="badge-row">
+        <span class="badge">GPA 3.9</span>
+        <span class="badge">BYU Scholarship</span>
+        <span class="badge">Dutch language</span>
+      </div>
+    </div>
+
+    <aside class="card pad">
+      <div class="entry">
+        <div class="entry-head">
+          <h3>At a glance</h3>
+          <span class="meta">Provo, UT</span>
+        </div>
+        <ul>
+          <li>Pre-Business student at Brigham Young University</li>
+          <li>Experience in marketing, leadership, and customer service</li>
+          <li>Interested in social media marketing & consumer psychology</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <main>
+    <!-- EDUCATION -->
+    <section class="card pad">
+      <div class="section-title">
+        <h2>Education</h2>
+        <span class="meta">Aug 2022 – Present</span>
+      </div>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>Brigham Young University — B.S. Pre-Business</h3>
+          <span class="meta">Provo, UT</span>
+        </div>
+        <p class="meta">GPA: 3.9</p>
+        <ul>
+          <li>Brigham Young University Scholarship</li>
+          <li>Marketing Association; Experience Design Society</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="card pad">
+      <div class="section-title">
+        <h2>Work Experience</h2>
+      </div>
+
+      <div class="grid2">
+        <div class="entry">
+          <div class="entry-head">
+            <h3>Cracker Barrel Old Country Store — Server</h3>
+            <span class="meta">Sterling, VA • Feb 2024 – Mar 2024</span>
+          </div>
+          <ul>
+            <li>Monitored orders for 25+ customers at a time, demonstrating strong time management.</li>
+            <li>Interacted with 100+ people per shift, generating a 10% increase in sales through order accuracy.</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3>Healthy Hounds Playground — Daycare Attendant</h3>
+            <span class="meta">Ashburn, VA • Jul 2023 – Sep 2023</span>
+          </div>
+          <ul>
+            <li>Monitored 40+ dogs at a time, maintaining a safe environment.</li>
+            <li>Communicated behavioral issues and successes with pet owners and management.</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3>Woofie’s — Dog Walker / Pet Sitter</h3>
+            <span class="meta">Ashburn, VA • Jul 2022 – Present</span>
+          </div>
+          <ul>
+            <li>Provided specialized care for 5+ species of pets, administering medication when necessary.</li>
+            <li>Communicated visit updates with owners via the Woofie’s app.</li>
+            <li>Managed multiple dogs of varying sizes and temperaments.</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3>FoxForce Media — Social Media Marketing Assistant</h3>
+            <span class="meta">Provo, UT • Nov 2025 – Present</span>
+          </div>
+          <ul>
+            <li>Executed integrated social media and PR campaigns across Instagram, TikTok, and other platforms.</li>
+            <li>Led media outreach to journalists for press coverage of client launches.</li>
+            <li>Planned and scheduled weekly content calendars to optimize reach and engagement.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEADERSHIP -->
+    <section class="card pad">
+      <div class="section-title">
+        <h2>Leadership & Service</h2>
+      </div>
+      <div class="entry">
+        <div class="entry-head">
+          <h3>The Church of Jesus Christ of Latter-day Saints — Full-Time Volunteer</h3>
+          <span class="meta">Suriname • Mar 2024 – Aug 2025</span>
+        </div>
+        <ul>
+          <li>Led and monitored a team of 6 volunteers, improving teaching effectiveness by 15%.</li>
+          <li>Developed communication and Dutch language skills through community collaboration.</li>
+          <li>Participated in 3+ weekly meetings to analyze progress and identify growth opportunities.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="card pad">
+      <div class="section-title">
+        <h2>Skills & Interests</h2>
+      </div>
+      <div class="grid2">
+        <div class="entry">
+          <h3>Skills</h3>
+          <ul>
+            <li>Leadership & collaboration</li>
+            <li>Creative & adaptable</li>
+            <li>Canva and Excel</li>
+            <li>Dutch language</li>
+          </ul>
+        </div>
+        <div class="entry">
+          <h3>Interests</h3>
+          <ul>
+            <li>Consumer psychology</li>
+            <li>Social media marketing</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Cora Atkinson
+  </footer>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<nav class="navbar">
+    <ul>
+        <li class="nav-item"><a class="nav-link" href="fungame.html">Game</a></li>
+        <li class="nav-item"><a class="nav-link" href="Suriname.html">Suriname</a></li>
+    </ul>
+</nav>
+
+</body>
+</html>
