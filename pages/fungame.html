@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tropical Beach Snake</title>
+  <link rel="stylesheet" href="../styles/navbar.css">
+  <style>
+    :root{
+      /* Beach theme */
+      --sand: #f3e1bf;
+      --sand2:#ecd3a6;
+      --sea: #0b6fb5;
+      --sea2:#53c0ff;
+      --deep: #0a2a3a;
+      --ink: #13313f;
+      --muted: rgba(19,49,63,0.78);
+      --panel: rgba(255, 255, 255, 0.55);
+      --border: rgba(19,49,63,0.18);
+      --shadow: 0 18px 45px rgba(10,42,58,0.22);
+      --radius: 18px;
+      --accent: #ff6f61; /* coral */
+      --accent2:#2dd4bf; /* seafoam */
+    }
+
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 700px at 18% 10%, rgba(83,192,255,0.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 15%, rgba(255,111,97,0.12), transparent 60%),
+        linear-gradient(180deg, var(--sand), var(--sand2));
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .app{
+      width: min(980px, 100%);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .topbar{
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .brand{
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .brand h1{
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: 0.2px;
+      color: var(--deep);
+    }
+    .score{
+      margin: 0;
+      font-size: 1rem;
+      color: var(--ink);
+      font-weight: 800;
+    }
+    .score span{
+      color: var(--sea);
+      font-weight: 900;
+    }
+    .sub{
+      width: 100%;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      grid-column: 1 / -1;
+    }
+
+    .controls{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .control{
+      background: rgba(255,255,255,0.50);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .control label{
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    input[type="range"]{
+      width: 180px;
+      accent-color: var(--sea);
+    }
+
+    .btn{
+      appearance: none;
+      border: 1px solid rgba(19,49,63,0.22);
+      background: rgba(83,192,255,0.22);
+      color: var(--deep);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+      user-select: none;
+    }
+    .btn:hover{ background: rgba(83,192,255,0.30); border-color: rgba(19,49,63,0.30); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus-visible{
+      outline: 3px solid rgba(11,111,181, 0.35);
+      outline-offset: 2px;
+    }
+
+    .stage{
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    .canvasWrap{
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      border-radius: calc(var(--radius) - 6px);
+      background: rgba(255,255,255,0.30);
+      border: 1px solid rgba(19,49,63,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas{
+      width: min(640px, 92vw);
+      height: min(640px, 92vw);
+      aspect-ratio: 1 / 1;
+      image-rendering: pixelated;
+      border-radius: 16px;
+      background:
+        radial-gradient(700px 420px at 30% 20%, rgba(83,192,255,0.22), transparent 60%),
+        radial-gradient(600px 380px at 75% 70%, rgba(255,111,97,0.10), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.10));
+      border: 1px solid rgba(19,49,63,0.16);
+    }
+
+    .hud{
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+      padding: 0 4px;
+    }
+    .hud b{ color: var(--deep); }
+    .hud .fruit{
+      color: var(--sea);
+      font-weight: 900;
+    }
+
+    .overlay{
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(10,42,58,0.35);
+      backdrop-filter: blur(6px);
+      padding: 18px;
+    }
+    .overlay.show{ display: grid; }
+
+    .modal{
+      width: min(520px, 92%);
+      background: rgba(255,255,255,0.70);
+      border: 1px solid rgba(19,49,63,0.18);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      text-align: center;
+    }
+    .modal h2{
+      margin: 0 0 6px;
+      color: var(--deep);
+      letter-spacing: 0.2px;
+    }
+    .modal p{
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .modal .big{
+      margin-top: 10px;
+      font-size: 1.05rem;
+      color: var(--deep);
+      font-weight: 1000;
+    }
+    .row{
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+ .navbar{
+        background-color: transparent !important;
+      }
+      .nav-link{
+        background-color: white;
+        opacity: 50%;
+        position: right;
+      }
+    /* Mobile D-pad */
+    .dpad{
+      display: none;
+      margin: 10px auto 0;
+      width: min(360px, 100%);
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .dpad .btn{
+      width: 110px;
+      padding: 12px 10px;
+    }
+    @media (hover: none) and (pointer: coarse){
+      .dpad{ display: flex; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul>
+        <li class="nav-item"><a class="nav-link" href="scratch.html">Suriname</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html">Resume</a></li>
+    </ul>
+</nav>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Tropical Beach Snake</h1>
+        <p class="score" aria-live="polite">Score: <span id="score">0</span></p>
+        <div class="sub">Arrow keys or WASD. Space pauses. Eat tropical fruit. Avoid walls and your tail.</div>
+      </div>
+
+      <div class="controls">
+        <div class="control" title="Adjust how fast the snake moves">
+          <label for="speed">Speed</label>
+          <input id="speed" type="range" min="4" max="18" step="1" value="10" />
+          <span id="speedVal" style="min-width:3ch; text-align:right; font-weight:900; color:var(--deep);">10</span>
+        </div>
+        <button class="btn" id="restartBtn" type="button">Restart</button>
+        <button class="btn" id="pauseBtn" type="button">Pause</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="hud">
+        <div>High score: <b id="high">0</b></div>
+        <div>Fruit: <span class="fruit" id="fruitName">Mango</span></div>
+        <div>Mode: <b id="mode">Ready</b></div>
+      </div>
+
+      <div class="canvasWrap">
+        <canvas id="game" width="640" height="640" aria-label="Snake game"></canvas>
+
+        <div class="overlay show" id="overlay">
+          <div class="modal">
+            <h2 id="overlayTitle">Press Start</h2>
+            <p id="overlayText">Use arrow keys or WASD to move. Space to pause.</p>
+            <div class="big" id="overlayStats">Score: 0</div>
+            <div class="row">
+              <button class="btn" id="startBtn" type="button">Start</button>
+              <button class="btn" id="howBtn" type="button">How to play</button>
+            </div>
+            <p style="margin-top:12px; font-size:0.92rem; font-weight:800;">
+              Tip: Increase speed for a tougher run.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dpad" aria-label="Mobile controls">
+        <button class="btn" data-dir="up" type="button">Up</button>
+        <button class="btn" data-dir="left" type="button">Left</button>
+        <button class="btn" data-dir="down" type="button">Down</button>
+        <button class="btn" data-dir="right" type="button">Right</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+
+      const scoreEl = document.getElementById("score");
+      const highEl = document.getElementById("high");
+      const fruitNameEl = document.getElementById("fruitName");
+      const modeEl = document.getElementById("mode");
+
+      const overlay = document.getElementById("overlay");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const overlayText = document.getElementById("overlayText");
+      const overlayStats = document.getElementById("overlayStats");
+
+      const speedSlider = document.getElementById("speed");
+      const speedVal = document.getElementById("speedVal");
+
+      const startBtn = document.getElementById("startBtn");
+      const restartBtn = document.getElementById("restartBtn");
+      const pauseBtn = document.getElementById("pauseBtn");
+      const howBtn = document.getElementById("howBtn");
+
+      const dpad = document.querySelector(".dpad");
+
+      // Tropical fruits only (icons are just for fun on the canvas)
+      const TROPICAL = [
+        { name: "Mango", icon: "🥭" },
+        { name: "Pineapple", icon: "🍍" },
+        { name: "Banana", icon: "🍌" },
+        { name: "Coconut", icon: "🥥" },
+        { name: "Kiwi", icon: "🥝" }
+      ];
+
+      // Settings
+      const GRID = 24;               // 24x24 grid
+      const CELL = canvas.width / GRID;
+      const START_LEN = 4;
+
+      // State
+      let snake, dir, pendingDir, fruit, score, high, running, paused, gameOver;
+      let accumulator = 0;
+      let lastTime = 0;
+      let stepMs = speedToStepMs(+speedSlider.value);
+
+      // Storage
+      const KEY = "tropical_beach_snake_highscore_v1";
+      high = Number(localStorage.getItem(KEY) || 0);
+      highEl.textContent = String(high);
+
+      function speedToStepMs(speed){
+        // speed: 4..18 (higher -> faster)
+        // Map to ~230ms .. ~70ms
+        const t = 255 - speed * 10.3; // 4->214, 18->69
+        return Math.max(60, Math.min(260, t));
+      }
+
+      function reset({ showOverlay = true } = {}){
+        const cx = Math.floor(GRID/2);
+        const cy = Math.floor(GRID/2);
+
+        snake = [];
+        for(let i=0;i<START_LEN;i++){
+          snake.push({ x: cx - i, y: cy, trunks: false });
+        }
+        // Put swim trunks on every 3rd segment for the vibe
+        for (let i = 1; i < snake.length; i++){
+          snake[i].trunks = (i % 3 === 0);
+        }
+
+        dir = { x: 1, y: 0 };
+        pendingDir = null;
+        score = 0;
+        running = false;
+        paused = false;
+        gameOver = false;
+        accumulator = 0;
+        lastTime = 0;
+
+        scoreEl.textContent = "0";
+        modeEl.textContent = "Ready";
+        spawnFruit(true);
+
+        if(showOverlay) showStartOverlay();
+        else hideOverlay();
+
+        draw();
+      }
+
+      function showStartOverlay(){
+        overlay.classList.add("show");
+        overlayTitle.textContent = "Press Start";
+        overlayText.textContent = "Use arrow keys or WASD to move. Space to pause.";
+        overlayStats.textContent = `Score: ${score}`;
+      }
+      function showHowOverlay(){
+        overlay.classList.add("show");
+        overlayTitle.textContent = "How to Play";
+        overlayText.textContent = "Eat tropical fruit to grow and score points. Avoid walls and your own tail. Adjust speed anytime.";
+        overlayStats.textContent = "Controls: Arrow keys / WASD, Space = Pause";
+      }
+      function showGameOverOverlay(){
+        overlay.classList.add("show");
+        overlayTitle.textContent = "Wipeout";
+        overlayText.textContent = "Press Restart or Start to surf again.";
+        overlayStats.textContent = `Score: ${score} • High: ${high}`;
+      }
+      function hideOverlay(){
+        overlay.classList.remove("show");
+      }
+
+      function start(){
+        if(gameOver) return;
+        running = true;
+        paused = false;
+        modeEl.textContent = "Playing";
+        hideOverlay();
+        requestAnimationFrame(loop);
+      }
+
+      function restart(){
+        reset({ showOverlay: false });
+        running = true;
+        paused = false;
+        modeEl.textContent = "Playing";
+        hideOverlay();
+        requestAnimationFrame(loop);
+      }
+
+      function togglePause(){
+        if(!running && !gameOver){
+          start();
+          return;
+        }
+        if(gameOver) return;
+
+        paused = !paused;
+        modeEl.textContent = paused ? "Paused" : "Playing";
+        pauseBtn.textContent = paused ? "Resume" : "Pause";
+
+        if(paused){
+          overlay.classList.add("show");
+          overlayTitle.textContent = "Paused";
+          overlayText.textContent = "Press Space or Resume to continue.";
+          overlayStats.textContent = `Score: ${score}`;
+        } else {
+          hideOverlay();
+          lastTime = 0;
+          requestAnimationFrame(loop);
+        }
+      }
+
+      function setDirection(nx, ny){
+        if(dir.x === -nx && dir.y === -ny) return; // no instant reverse
+        pendingDir = { x: nx, y: ny };
+      }
+
+      function spawnFruit(forceNew = false){
+        if(forceNew || !fruit){
+          fruit = TROPICAL[Math.floor(Math.random() * TROPICAL.length)];
+        } else {
+          let next = fruit;
+          for(let i=0;i<6 && next.name === fruit.name;i++){
+            next = TROPICAL[Math.floor(Math.random() * TROPICAL.length)];
+          }
+          fruit = next;
+        }
+
+        const occupied = new Set(snake.map(p => `${p.x},${p.y}`));
+        let x, y, tries = 0;
+        do{
+          x = Math.floor(Math.random() * GRID);
+          y = Math.floor(Math.random() * GRID);
+          tries++;
+          if(tries > 2000) break;
+        } while(occupied.has(`${x},${y}`));
+
+        fruit.x = x;
+        fruit.y = y;
+        fruitNameEl.textContent = fruit.name;
+      }
+
+      function loop(ts){
+        if(!running || paused || gameOver) return;
+
+        if(!lastTime) lastTime = ts;
+        const dt = ts - lastTime;
+        lastTime = ts;
+        accumulator += dt;
+
+        stepMs = speedToStepMs(+speedSlider.value);
+
+        while(accumulator >= stepMs){
+          tick();
+          accumulator -= stepMs;
+          if(gameOver) break;
+        }
+
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      function tick(){
+        if(pendingDir){
+          dir = pendingDir;
+          pendingDir = null;
+        }
+
+        const head = snake[0];
+        const next = { x: head.x + dir.x, y: head.y + dir.y, trunks: false };
+
+        // wall collision
+        if(next.x < 0 || next.y < 0 || next.x >= GRID || next.y >= GRID){
+          endGame();
+          return;
+        }
+
+        // self collision
+        for(let i=0;i<snake.length;i++){
+          if(snake[i].x === next.x && snake[i].y === next.y){
+            endGame();
+            return;
+          }
+        }
+
+        snake.unshift(next);
+
+        // Eat fruit?
+        if(next.x === fruit.x && next.y === fruit.y){
+          score += 10;
+          scoreEl.textContent = String(score);
+
+          if(score > high){
+            high = score;
+            highEl.textContent = String(high);
+            localStorage.setItem(KEY, String(high));
+          }
+          // Add trunks occasionally as you grow
+          const newSegIdx = snake.length - 1;
+          snake[newSegIdx].trunks = (snake.length % 3 === 0);
+
+          spawnFruit(false);
+        } else {
+          snake.pop();
+        }
+
+        // Refresh trunks pattern lightly so it stays spaced
+        for(let i=1;i<snake.length;i++){
+          snake[i].trunks = (i % 3 === 0);
+        }
+      }
+
+      function endGame(){
+        gameOver = true;
+        running = false;
+        paused = false;
+        modeEl.textContent = "Wipeout";
+        pauseBtn.textContent = "Pause";
+        showGameOverOverlay();
+        draw(true);
+      }
+
+      function draw(isCrash = false){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Sand grid
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        ctx.strokeStyle = "#13313f";
+        ctx.lineWidth = 1;
+
+        for(let i=1;i<GRID;i++){
+          const p = i * CELL;
+          ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, canvas.height); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, p); ctx.lineTo(canvas.width, p); ctx.stroke();
+        }
+        ctx.restore();
+
+        // Fruit glow
+        const fx = fruit.x * CELL + CELL/2;
+        const fy = fruit.y * CELL + CELL/2;
+        ctx.save();
+        const glow = ctx.createRadialGradient(fx, fy, 2, fx, fy, CELL*1.1);
+        glow.addColorStop(0, "rgba(83,192,255,0.55)");
+        glow.addColorStop(1, "rgba(83,192,255,0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(fx, fy, CELL*1.2, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+
+        // Fruit tile
+        drawTile(fruit.x, fruit.y, {
+          fill: "rgba(255,255,255,0.35)",
+          stroke: "rgba(11,111,181,0.55)",
+          head: false
+        });
+
+        // Fruit icon
+        ctx.save();
+        ctx.font = `${Math.floor(CELL * 0.72)}px ui-rounded, system-ui, Apple Color Emoji, Segoe UI Emoji`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.globalAlpha = 0.95;
+        ctx.fillText(fruit.icon, fx, fy + 1);
+        ctx.restore();
+
+        // Snake segments
+        for(let i=snake.length-1;i>=0;i--){
+          const p = snake[i];
+          const isHead = i === 0;
+
+          let fill, stroke;
+          if(isCrash && isHead){
+            fill = "rgba(255,111,97,0.32)";
+            stroke = "rgba(255,111,97,0.9)";
+          } else {
+            const t = i / Math.max(1, snake.length - 1);
+            fill = `rgba(11,111,181, ${0.30 + (1-t)*0.25})`;   // blue body
+            stroke = `rgba(83,192,255, ${0.70 - t*0.20})`;     // light blue outline
+          }
+
+          drawTile(p.x, p.y, { fill, stroke, head: isHead, trunks: p.trunks });
+        }
+
+        // Warm vignette
+        ctx.save();
+        const g = ctx.createRadialGradient(canvas.width/2, canvas.height/2, canvas.width*0.22, canvas.width/2, canvas.height/2, canvas.width*0.62);
+        g.addColorStop(0, "rgba(243,225,191,0)");
+        g.addColorStop(1, "rgba(10,42,58,0.22)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.restore();
+      }
+
+      function drawTile(x, y, { fill, stroke, head=false, trunks=false }){
+        const pad = head ? 3 : 4;
+        const rx = x * CELL + pad;
+        const ry = y * CELL + pad;
+        const w = CELL - pad*2;
+        const h = CELL - pad*2;
+        const r = head ? 10 : 9;
+
+        // Shadow
+        ctx.save();
+        ctx.globalAlpha = 0.25;
+        ctx.fillStyle = "rgba(10,42,58,0.55)";
+        roundRect(rx + 2, ry + 2, w, h, r);
+        ctx.fill();
+        ctx.restore();
+
+        // Body
+        ctx.save();
+        ctx.fillStyle = fill;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 2;
+        roundRect(rx, ry, w, h, r);
+        ctx.fill();
+        ctx.stroke();
+
+        // Gloss highlight
+        ctx.globalAlpha = 0.22;
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        roundRect(rx + 3, ry + 3, w - 6, Math.max(6, h * 0.30), r-2);
+        ctx.fill();
+        ctx.restore();
+
+        // Swim trunks: simple striped band across the segment
+        if(trunks && !head){
+          ctx.save();
+          const bandY = ry + Math.floor(h * 0.46);
+          const bandH = Math.max(7, Math.floor(h * 0.40));
+          // base trunks
+          ctx.fillStyle = "rgba(255,111,97,0.85)"; // coral
+          roundRect(rx + 4, bandY, w - 8, bandH, 7);
+          ctx.fill();
+          // stripes
+          ctx.globalAlpha = 0.9;
+          ctx.fillStyle = "rgba(45,212,191,0.95)"; // seafoam
+          for(let i=0;i<4;i++){
+            const sx = rx + 6 + i * ((w - 12) / 4);
+            ctx.fillRect(sx, bandY + 2, Math.max(2, Math.floor((w-12)/10)), bandH - 4);
+          }
+          // waistband
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = "rgba(255,255,255,0.65)";
+          ctx.fillRect(rx + 6, bandY + 2, w - 12, 3);
+          ctx.restore();
+        }
+
+        // Head eyes
+        if(head){
+          const cx = x*CELL + CELL/2;
+          const cy = y*CELL + CELL/2;
+          ctx.save();
+          ctx.fillStyle = "rgba(255,255,255,0.95)";
+          const ex = dir.x !== 0 ? 6 : 4;
+          const ey = dir.y !== 0 ? 6 : 4;
+          ctx.beginPath();
+          ctx.arc(cx - ex, cy - ey, 3, 0, Math.PI*2);
+          ctx.arc(cx + ex, cy - ey, 3, 0, Math.PI*2);
+          ctx.fill();
+
+          ctx.fillStyle = "rgba(10,42,58,0.92)";
+          ctx.beginPath();
+          ctx.arc(cx - ex, cy - ey, 1.5, 0, Math.PI*2);
+          ctx.arc(cx + ex, cy - ey, 1.5, 0, Math.PI*2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      function roundRect(x, y, w, h, r){
+        const rr = Math.min(r, w/2, h/2);
+        ctx.beginPath();
+        ctx.moveTo(x + rr, y);
+        ctx.arcTo(x + w, y, x + w, y + h, rr);
+        ctx.arcTo(x + w, y + h, x, y + h, rr);
+        ctx.arcTo(x, y + h, x, y, rr);
+        ctx.arcTo(x, y, x + w, y, rr);
+        ctx.closePath();
+      }
+
+      // Keyboard input
+      window.addEventListener("keydown", (e) => {
+        const k = e.key.toLowerCase();
+
+        if(k === " "){
+          e.preventDefault();
+          togglePause();
+          return;
+        }
+
+        if(overlay.classList.contains("show") && (k === "enter")){
+          if(!gameOver) start();
+          else restart();
+          return;
+        }
+
+        if(k === "arrowup" || k === "w") setDirection(0, -1);
+        else if(k === "arrowdown" || k === "s") setDirection(0, 1);
+        else if(k === "arrowleft" || k === "a") setDirection(-1, 0);
+        else if(k === "arrowright" || k === "d") setDirection(1, 0);
+      });
+
+      // Mobile D-pad
+      dpad?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-dir]");
+        if(!btn) return;
+        const d = btn.getAttribute("data-dir");
+        if(d === "up") setDirection(0, -1);
+        if(d === "down") setDirection(0, 1);
+        if(d === "left") setDirection(-1, 0);
+        if(d === "right") setDirection(1, 0);
+      });
+
+      // Buttons
+      startBtn.addEventListener("click", () => gameOver ? restart() : start());
+      restartBtn.addEventListener("click", restart);
+      pauseBtn.addEventListener("click", togglePause);
+      howBtn.addEventListener("click", showHowOverlay);
+
+      // Speed slider
+      speedSlider.addEventListener("input", () => {
+        speedVal.textContent = speedSlider.value;
+      });
+
+      // Overlay click (outside modal)
+      overlay.addEventListener("click", (e) => {
+        if(e.target.closest(".modal")) return;
+        if(gameOver) restart();
+        else if(!running) start();
+        else if(paused) togglePause();
+      });
+
+      // Init
+      speedVal.textContent = speedSlider.value;
+      reset({ showOverlay: true });
+    })();
+  </script>
+  
+
+</body>
+</html>
